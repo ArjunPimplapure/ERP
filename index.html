@@ -147,6 +147,7 @@
         <div id="itemsContainer">
             <label for="items1">Items:</label>
             <select id="items1" name="items1">
+                <option value=""></option>
                 <option value="Cone">Cone</option>
                 <option value="Safety Jacket">Safety Jacket</option>
                 <option value="Helmet">Helmet</option>
@@ -217,7 +218,11 @@
                 <option value="Safety Net Aluminum Rope">Safety Net Aluminum Rope</option>
                 <option value="Safety Net Wooden Rope">Safety Net Wooden Rope</option>
                 <option value="Life Jacket">Life Jacket</option>
-            </select>
+            </select><br>
+            <label for="addManuallyCheckbox">Add Manually:</label>
+<input type="checkbox" id="addManuallyCheckbox" onclick="toggleaddManuallyTextbox()">
+<input type="text" id="addManually" style="display: none;" placeholder="Enter Item Name"><br>
+
             <label for="specificationCheckbox">Specifications:</label>
             <input type="checkbox" id="specificationCheckbox" onclick="toggleSpecificationTextbox()"><br>  
             <textarea id="specifications" style="display: none; height: 8em; width: 300px;" placeholder="Enter specifications"></textarea>
@@ -231,27 +236,6 @@
              </select><br><br>
 
             
-        
-            <div class="inputGroup">
-                <input type="checkbox" class="checkbox" name="weightCheckbox" onclick="toggleTextbox(this, 'weightInput')">Weight
-                <div class="weightInput" style="display: none;">
-                    <input type="text" class="weightInput" placeholder="Enter weight">
-                </div>
-            </div>
-
-            <div class="inputGroup">
-                <input type="checkbox" class="checkbox" name="sizeCheckbox" onclick="toggleTextbox(this, 'sizeInput')">Size
-                <div class="sizeInput" style="display: none;">
-                    <input type="text" class="sizeInput" placeholder="Enter size">
-                </div>
-            </div>
-
-            <div class="inputGroup">
-                <input type="checkbox" class="checkbox" name="colorCheckbox" onclick="toggleTextbox(this, 'colorInput')">Color
-                <div class="colorInput" style="display: none;">
-                    <input type="text" class="colorInput" placeholder="Enter color">
-                </div>
-            </div>
 
             <label for="quantity1">Quantity:</label>
             <input type="number" id="quantity1" name="quantity1" value="1" min="1">
@@ -312,7 +296,15 @@ function toggleemailTextbox() {
         emailTextbox.style.display = 'none';
     }
 }
-
+function toggleaddManuallyTextbox() {
+    const addManuallyCheckbox = document.getElementById('addManuallyCheckbox');
+    const addManuallyTextbox = document.getElementById('addManually');
+    if (addManuallyCheckbox.checked) {
+        addManuallyTextbox.style.display = 'block';
+    } else {
+        addManuallyTextbox.style.display = 'none';
+    }
+}
     let itemCount = 1;
         function toggleTextbox(checkbox, className) {
             const textbox = checkbox.parentElement.querySelector(`.${className}`);
@@ -400,7 +392,10 @@ function toggleemailTextbox() {
                     <option value="Safety Net Aluminum Rope">Safety Net Aluminum Rope</option>
                     <option value="Safety Net Wooden Rope">Safety Net Wooden Rope</option>
                     <option value="Life Jacket">Life Jacket</option>
-                </select>
+                </select><br>
+                <label for="addManuallyCheckbox">Add Manually:</label>
+<input type="checkbox" id="addManuallyCheckbox" onclick="toggleaddManuallyTextbox()">
+<input type="text" id="addManually" style="display: none;" placeholder="Enter Item Name"><br>
                 <label for="specificationCheckbox">Specifications:</label>
             <input type="checkbox" id="specificationCheckbox" onclick="toggleSpecificationTextbox()"><br>  
             <textarea id="specifications" style="display: none; height: 8em; width: 300px;" placeholder="Enter specifications"></textarea>
@@ -414,26 +409,7 @@ function toggleemailTextbox() {
                     <option value="Each Machine">Each Machine</option>
                 </select><br><br>
 
-                <div class="inputGroup">
-                    <input type="checkbox" class="checkbox" name="weightCheckbox" onclick="toggleTextbox(this, 'weightInput')">Weight
-                    <div class="weightInput" style="display: none;">
-                        <input type="text" class="weightInput" placeholder="Enter weight">
-                    </div>
-                </div>
-
-                <div class="inputGroup">
-                    <input type="checkbox" class="checkbox" name="sizeCheckbox" onclick="toggleTextbox(this, 'sizeInput')">Size
-                    <div class="sizeInput" style="display: none;">
-                        <input type="text" class="sizeInput" placeholder="Enter size">
-                    </div>
-                </div>
-
-                <div class="inputGroup">
-                    <input type="checkbox" class="checkbox" name="colorCheckbox" onclick="toggleTextbox(this, 'colorInput')">Color
-                    <div class="colorInput" style="display: none;">
-                        <input type="text" class="colorInput" placeholder="Enter color">
-                    </div>
-                </div>
+               
                
 
 
@@ -508,14 +484,20 @@ const emailCheckbox = document.getElementById('emailCheckbox');
 
             const items = [];
             for (let i = 1; i <= itemCount; i++) {
-                const item = document.getElementById(`items${i}`).value;
+                const item = document.getElementById(`items${i}`).value; 
+
+                const addManuallyCheckbox = document.getElementById('addManuallyCheckbox');
+    const addManuallyTextbox = document.getElementById('addManually');
+    const addManually = addManuallyCheckbox.checked ? addManuallyTextbox.value.replace() : '';
+
+
                 const specificationCheckbox = document.getElementById('specificationCheckbox');
     const specificationsTextbox = document.getElementById('specifications');
     const specifications = specificationCheckbox.checked ? specificationsTextbox.value.replace(/\n/g, '<br>') : '';
                 const unit = document.getElementById(`unit${i}`).value; // Get the selected unit
                 const quantity = parseInt(document.getElementById(`quantity${i}`).value);
                 const price = parseFloat(document.getElementById(`price${i}`).value);
-                items.push({ item, specifications, unit, quantity, price });
+                items.push({ item, addManually, specifications, unit, quantity, price });
             }
 
             
@@ -647,7 +629,7 @@ const emailCheckbox = document.getElementById('emailCheckbox');
         quotationHTML += `
             <tr>
                 <td>${index + 1}</td>
-                <td style="text-align: left;">${item.item} <br>  ${item.specifications} </td>
+                <td style="text-align: left;">${item.item}${item.addManually} <br>  ${item.specifications} </td>
                 <td>${item.unit}</td> <!-- Add the selected unit -->
                 <td>${item.price}</td>
             </tr>
@@ -735,6 +717,9 @@ const emailCheckbox = document.getElementById('emailCheckbox');
            const items = [];
            for (let i = 1; i <= itemCount; i++) {
                const item = document.getElementById(`items${i}`).value;
+               const addManuallyCheckbox = document.getElementById('addManuallyCheckbox');
+    const addManuallyTextbox = document.getElementById('addManually');
+    const addManually = addManuallyCheckbox.checked ? addManuallyTextbox.value.replace() : '';
                const specificationCheckbox = document.getElementById('specificationCheckbox');
     const specificationsTextbox = document.getElementById('specifications');
     const specifications = specificationCheckbox.checked ? specificationsTextbox.value.replace(/\n/g, '<br>') : '';
@@ -882,7 +867,7 @@ const emailCheckbox = document.getElementById('emailCheckbox');
        quotationHTML += `
            <tr>
                <td>${index + 1}</td>
-               <td style="text-align: left;">${item.item} <br>  ${item.specifications} </td>
+               <td style="text-align: left;">${item.item}${item.addManually} <br>  ${item.specifications} </td>
                <td>${item.unit}</td> <!-- Add the selected unit -->
                <td>${item.quantity}</td>
                <td>${item.price}</td>
@@ -967,6 +952,9 @@ const emailCheckbox = document.getElementById('emailCheckbox');
            const items = [];
            for (let i = 1; i <= itemCount; i++) {
                const item = document.getElementById(`items${i}`).value;
+               const addManuallyCheckbox = document.getElementById('addManuallyCheckbox');
+    const addManuallyTextbox = document.getElementById('addManually');
+    const addManually = addManuallyCheckbox.checked ? addManuallyTextbox.value.replace() : '';
                const specificationCheckbox = document.getElementById('specificationCheckbox');
     const specificationsTextbox = document.getElementById('specifications');
     const specifications = specificationCheckbox.checked ? specificationsTextbox.value.replace(/\n/g, '<br>') : '';
@@ -1114,7 +1102,7 @@ const emailCheckbox = document.getElementById('emailCheckbox');
        quotationHTML += `
            <tr>
                <td>${index + 1}</td>
-               <td style="text-align: left;">${item.item} <br>  ${item.specifications} </td>
+               <td style="text-align: left;">${item.item}${item.addManually} <br>  ${item.specifications} </td>
                <td>${item.unit}</td> <!-- Add the selected unit -->
                <td>${item.quantity}</td>
                <td>${item.price}</td>
